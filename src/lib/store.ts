@@ -44,22 +44,37 @@ export function createWorkspace(name: string): Workspace {
   return newWorkspace;
 }
 
-export function addItemToWorkspace(workspaceId: string, url: string): Item {
+export function addItemToWorkspace(workspaceId: string, url: string, file?: File): Item {
   const workspaces = getWorkspaces();
   const workspaceIndex = workspaces.findIndex(w => w.id === workspaceId);
   
   if (workspaceIndex === -1) throw new Error('Workspace not found');
   
-  // Mock metadata extraction
-  const domain = new URL(url).hostname.replace('www.', '');
-  const newItem: Item = {
-    id: `item-${Date.now()}`,
-    type: url.endsWith('.pdf') ? 'pdf' : 'link',
-    title: `New Item from ${domain}`, // In a real app, we'd fetch title
-    url,
-    domain,
-    addedAt: new Date().toISOString(),
-  };
+  let newItem: Item;
+  
+  if (file) {
+    // Handle PDF file upload
+    newItem = {
+      id: `item-${Date.now()}`,
+      type: 'pdf',
+      title: file.name.replace('.pdf', ''),
+      url: URL.createObjectURL(file), // Create blob URL for local file
+      domain: 'local-file',
+      addedAt: new Date().toISOString(),
+      content: 'PDF content will be extracted here...', // Mock content
+    };
+  } else {
+    // Handle URL
+    const domain = new URL(url).hostname.replace('www.', '');
+    newItem = {
+      id: `item-${Date.now()}`,
+      type: url.endsWith('.pdf') ? 'pdf' : 'link',
+      title: `New Item from ${domain}`, // In a real app, we'd fetch title
+      url,
+      domain,
+      addedAt: new Date().toISOString(),
+    };
+  }
   
   workspaces[workspaceIndex].items.unshift(newItem);
   saveWorkspaces(workspaces);
