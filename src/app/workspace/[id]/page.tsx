@@ -73,11 +73,11 @@ export default function WorkspacePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       <Header />
       
       {/* Header Section */}
-      <div className="border-b bg-card px-3 sm:px-6 py-3 sm:py-4">
+      <div className="border-b bg-card px-3 sm:px-6 py-3 sm:py-4 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/">
@@ -101,7 +101,7 @@ export default function WorkspacePage() {
       </div>
 
       {/* Main Workspace */}
-      <main className="flex-1 p-2 sm:p-4 lg:p-6">
+      <main className="flex-1 p-2 sm:p-4 lg:p-6 overflow-hidden min-h-0">
         {/* Mobile Layout */}
         <div className="lg:hidden space-y-4">
           {/* Sources Section */}
@@ -156,7 +156,7 @@ export default function WorkspacePage() {
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden lg:flex gap-6 h-[calc(100vh-180px)]">
+        <div className="hidden lg:flex gap-6 h-full">
           {/* Left Panel: Sources */}
           <div className="w-[280px] border rounded-lg bg-card flex flex-col">
             <div className="p-4 border-b">

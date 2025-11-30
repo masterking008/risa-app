@@ -111,7 +111,19 @@ export function AddItemDialog({ onAdd }: AddItemDialogProps) {
                   </p>
                 </div>
               </div>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              {selectedFile && (
+                <div className="flex items-center gap-2 p-3 bg-blue-50 border border-[#002669] rounded-md">
+                  <FileText className="w-4 h-4 text-[#002669]" />
+                  <span className="text-sm font-medium text-[#002669] flex-1 truncate">{selectedFile.name}</span>
+                  <button
+                    onClick={() => setSelectedFile(null)}
+                    className="text-[#002669] hover:text-[#001a4d] text-xs font-medium"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+              <div className="border-2 border-dashed border-gray-300 hover:border-gray-400 rounded-lg p-6 text-center transition-colors">
                 <input
                   type="file"
                   accept=".pdf"
@@ -122,7 +134,7 @@ export function AddItemDialog({ onAdd }: AddItemDialogProps) {
                 <label htmlFor="pdf-upload" className="cursor-pointer">
                   <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                   <p className="text-sm text-gray-600">
-                    {selectedFile ? selectedFile.name : 'Click to select PDF file'}
+                    Click to select PDF file
                   </p>
                 </label>
               </div>

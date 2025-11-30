@@ -103,3 +103,19 @@ export function deleteItem(workspaceId: string, itemId: string) {
   workspaces[wIndex].items = workspaces[wIndex].items.filter(i => i.id !== itemId);
   saveWorkspaces(workspaces);
 }
+
+export function renameWorkspace(workspaceId: string, newName: string) {
+  const workspaces = getWorkspaces();
+  const wIndex = workspaces.findIndex(w => w.id === workspaceId);
+  
+  if (wIndex === -1) return;
+  
+  workspaces[wIndex].name = newName;
+  saveWorkspaces(workspaces);
+}
+
+export function deleteWorkspace(workspaceId: string) {
+  const workspaces = getWorkspaces();
+  const filtered = workspaces.filter(w => w.id !== workspaceId);
+  saveWorkspaces(filtered);
+}

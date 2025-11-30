@@ -24,8 +24,12 @@ export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
+  const loadWorkspaces = () => {
     setWorkspaces(getWorkspaces());
+  };
+
+  useEffect(() => {
+    loadWorkspaces();
   }, []);
 
   const handleCreate = () => {
@@ -89,7 +93,7 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {workspaces.map((ws, index) => (
                 <div key={ws.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <WorkspaceCard workspace={ws} />
+                  <WorkspaceCard workspace={ws} onUpdate={loadWorkspaces} />
                 </div>
               ))}
             </div>
