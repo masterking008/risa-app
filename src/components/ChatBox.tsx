@@ -145,12 +145,22 @@ export const ChatBox = React.forwardRef<any, ChatBoxProps>(({ items, onAddMessag
   };
 
   return (
-    <Card className="h-full flex flex-col rounded-lg">
-      <CardHeader className="pb-3">
+    <Card className="h-full flex flex-col rounded-lg shadow-none border">
+      <CardHeader className="pb-3 relative">
         <CardTitle className="text-lg">Chat with AI</CardTitle>
         <p className="text-sm text-muted-foreground">
           Ask questions about your {items.length} sources
         </p>
+        {currentSelection && (
+          <Button
+            onClick={highlightSelectedText}
+            className="absolute top-3 right-3 w-10 h-10 rounded-full shadow-sm bg-slate-200 hover:bg-slate-300 text-slate-700"
+            size="icon"
+            title="Toggle highlight"
+          >
+            <Highlighter className="w-4 h-4" />
+          </Button>
+        )}
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col p-0">
@@ -168,22 +178,22 @@ export const ChatBox = React.forwardRef<any, ChatBoxProps>(({ items, onAddMessag
                   className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {message.type === 'bot' && (
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                      <Bot className="w-4 h-4 text-slate-600" />
                     </div>
                   )}
                   <div
                     className={`max-w-[80%] rounded-lg p-3 ${
                       message.type === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                        ? 'bg-[#002669] text-white'
+                        : 'bg-slate-50'
                     }`}
                   >
                     <div 
                       className={`text-sm prose prose-sm max-w-none break-words select-text cursor-text ${
                         message.type === 'user' 
-                          ? 'text-white [&_*]:text-white [&_strong]:!bg-yellow-300 [&_strong]:!text-black [&_strong]:px-1 [&_strong]:py-0.5 [&_strong]:rounded [&_strong]:font-normal' 
-                          : 'text-white [&_*]:text-white [&_p]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_h5]:text-white [&_h6]:text-white [&_strong]:!bg-yellow-300 [&_strong]:!text-black [&_strong]:px-1 [&_strong]:py-0.5 [&_strong]:rounded [&_strong]:font-normal [&_em]:text-white [&_code]:text-white [&_pre]:text-white [&_li]:text-white [&_ul]:text-white [&_ol]:text-white [&_blockquote]:text-white [&_a]:text-white [&_table]:!border-collapse [&_table]:!border [&_table]:!border-gray-400 [&_table]:!w-full [&_th]:!border [&_th]:!border-gray-400 [&_th]:!px-2 [&_th]:!py-1 [&_th]:!bg-gray-700 [&_th]:!text-white [&_th]:!font-bold [&_td]:!border [&_td]:!border-gray-400 [&_td]:!px-2 [&_td]:!py-1 [&_td]:!text-white'
+                          ? 'text-white [&_*]:text-white [&_strong]:!bg-white/20 [&_strong]:!text-white [&_strong]:px-1 [&_strong]:py-0.5 [&_strong]:rounded [&_strong]:font-semibold' 
+                          : 'text-slate-900 [&_*]:text-slate-900 [&_p]:text-slate-900 [&_h1]:text-slate-900 [&_h2]:text-slate-900 [&_h3]:text-slate-900 [&_h4]:text-slate-900 [&_h5]:text-slate-900 [&_h6]:text-slate-900 [&_strong]:!bg-slate-200 [&_strong]:!text-slate-900 [&_strong]:px-1 [&_strong]:py-0.5 [&_strong]:rounded [&_strong]:font-semibold [&_em]:text-slate-900 [&_code]:bg-slate-200 [&_code]:text-slate-900 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_pre]:bg-slate-200 [&_pre]:text-slate-900 [&_pre]:p-2 [&_pre]:rounded [&_li]:text-slate-900 [&_ul]:text-slate-900 [&_ol]:text-slate-900 [&_blockquote]:text-slate-700 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300 [&_blockquote]:pl-4 [&_a]:text-[#002669] [&_a]:underline [&_table]:!border-collapse [&_table]:!border [&_table]:!border-slate-300 [&_table]:!w-full [&_th]:!border [&_th]:!border-slate-300 [&_th]:!px-2 [&_th]:!py-1 [&_th]:!bg-slate-100 [&_th]:!text-slate-900 [&_th]:!font-bold [&_td]:!border [&_td]:!border-slate-300 [&_td]:!px-2 [&_td]:!py-1 [&_td]:!text-slate-900'
                       }`}
                       onMouseUp={() => handleTextSelection(message.id)}
                     >
@@ -214,10 +224,10 @@ export const ChatBox = React.forwardRef<any, ChatBoxProps>(({ items, onAddMessag
               ))}
               {isLoading && (
                 <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Bot className="w-4 h-4 text-primary" />
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                    <Bot className="w-4 h-4 text-slate-600" />
                   </div>
-                  <div className="max-w-[80%] rounded-lg p-3 bg-muted">
+                  <div className="max-w-[80%] rounded-lg p-3 bg-slate-50">
                     <div className="flex items-center gap-1">
                       <span className="animate-pulse">•</span>
                       <span className="animate-pulse" style={{animationDelay: '0.2s'}}>•</span>
@@ -230,39 +240,21 @@ export const ChatBox = React.forwardRef<any, ChatBoxProps>(({ items, onAddMessag
           )}
         </div>
         
-        <div className="border-t p-2 sm:p-4 bg-card flex-shrink-0 rounded-b-lg">
-          <div className="flex gap-1 sm:gap-2">
+        <div className="border-t p-4 bg-card flex-shrink-0 rounded-b-lg">
+          <div className="flex gap-2">
             <Input
               placeholder="Ask about your sources..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              className="rounded-lg text-sm sm:text-base"
+              className="rounded-lg h-11"
             />
-            <Button onClick={handleSend} disabled={!input.trim() || isLoading} className="rounded-lg px-2 sm:px-4">
-              <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+            <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="default" className="rounded-lg h-11 w-11 p-0 flex-shrink-0">
+              <Send className="w-4 h-4" />
             </Button>
           </div>
         </div>
-        
-        {/* Floating Action Button */}
-        <Button
-          onClick={highlightSelectedText}
-          disabled={!currentSelection}
-          className={`fixed bottom-6 right-6 w-12 h-12 rounded-full shadow-lg z-50 ${
-            currentSelection ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-400 cursor-not-allowed'
-          }`}
-          size="icon"
-          title={currentSelection ? 'Toggle highlight' : 'Select text first'}
-        >
-          <Highlighter className="w-5 h-5" />
-        </Button>
-        
-        {currentSelection && (
-          <div className="absolute top-4 left-4 bg-blue-500 text-white px-2 py-1 rounded text-xs font-medium z-40">
-            Text selected - click highlight button
-          </div>
-        )}
+
       </CardContent>
     </Card>
   );

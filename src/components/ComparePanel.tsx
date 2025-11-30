@@ -96,47 +96,69 @@ Do not use tables anywhere. Ensure clarity, academic rigor, and depth of analysi
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="p-4">
-        <h3 className="flex items-center gap-2 text-lg font-semibold mb-3">
-          <GitCompare className="w-5 h-5 text-primary" />
-          Compare
-        </h3>
-        <p className="text-sm text-muted-foreground mb-2">Select PDFs to compare:</p>
-        <div className="space-y-1 mb-3">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className={`flex items-center gap-2 p-1 rounded cursor-pointer transition-colors ${
-                selectedItems.includes(item.id)
-                  ? 'bg-primary/10 border border-primary/20'
-                  : 'hover:bg-muted'
-              }`}
-              onClick={() => handleItemToggle(item.id)}
-            >
-              <div className={`w-2 h-2 rounded-full ${
-                selectedItems.includes(item.id) ? 'bg-primary' : 'bg-muted-foreground'
-              }`} />
-              <span className="text-xs flex-1 break-words">{item.title}</span>
+    <div className="h-full flex flex-col bg-white rounded-lg border shadow-sm overflow-hidden">
+      <div className="p-5 flex-shrink-0">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-[#002669] flex items-center justify-center">
+            <GitCompare className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">AI Compare</h3>
+            <p className="text-xs text-slate-500">Compare multiple documents</p>
+          </div>
+        </div>
+        
+        <div className="space-y-2">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-slate-700">Select documents:</p>
+            <span className="text-xs text-slate-500">{selectedItems.length} of {items.length}</span>
+          </div>
+          
+          <ScrollArea className="h-64">
+            <div className="space-y-2 pr-4">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                  selectedItems.includes(item.id)
+                    ? 'bg-slate-100 border border-slate-300 shadow-sm'
+                    : 'hover:bg-slate-50 border border-transparent'
+                }`}
+                onClick={() => handleItemToggle(item.id)}
+              >
+                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${
+                  selectedItems.includes(item.id) 
+                    ? 'bg-[#002669] border-[#002669]' 
+                    : 'border-slate-300 hover:border-slate-400'
+                }`}>
+                  {selectedItems.includes(item.id) && (
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  )}
+                </div>
+                <span className="text-sm flex-1 break-words text-slate-700 font-medium">{item.title}</span>
+              </div>
+            ))}
             </div>
-          ))}
+          </ScrollArea>
         </div>
       </div>
       
-      <div className="border-t p-4">
+      <div className="border-t bg-white p-4 rounded-b-lg flex-shrink-0">
         <Button 
           onClick={handleCompare} 
           disabled={isLoading || selectedItems.length < 2}
-          size="sm"
-          className="w-full"
+          className="w-full bg-[#002669] hover:bg-[#001a4d] text-white py-3 text-sm font-semibold"
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-3 h-3 mr-2 animate-spin" />
-              Comparing...
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Comparing Documents...
             </>
           ) : (
-            `Compare ${selectedItems.length}`
+            <>
+              <GitCompare className="w-4 h-4 mr-2" />
+              Compare {selectedItems.length} Document{selectedItems.length !== 1 ? 's' : ''}
+            </>
           )}
         </Button>
       </div>

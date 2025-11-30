@@ -1,7 +1,5 @@
 import Link from 'next/link';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Clock, FileText, ArrowRight } from 'lucide-react';
+import { Clock, FileText, ArrowRight, Sparkles } from 'lucide-react';
 import { Workspace } from '@/lib/types';
 
 interface WorkspaceCardProps {
@@ -11,38 +9,34 @@ interface WorkspaceCardProps {
 export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
   return (
     <Link href={`/workspace/${workspace.id}`} className="block group">
-      <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50 group-hover:-translate-y-1">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-medium line-clamp-1 group-hover:text-primary transition-colors">
-            {workspace.name}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pb-3">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+      <div className="h-full bg-white border border-slate-200 rounded-xl p-6">
+        <div className="space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="text-lg font-semibold text-slate-900 line-clamp-2 group-hover:text-[#002669] transition-colors">
+              {workspace.name}
+            </h3>
+            <ArrowRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
+          </div>
+          
+          <div className="flex items-center gap-4 text-sm text-slate-600">
             <div className="flex items-center gap-1.5">
               <FileText className="w-4 h-4" />
               <span>{workspace.items.length} items</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
-              <span>{new Date(workspace.createdAt).toLocaleDateString()}</span>
+              <span>{new Date(workspace.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
             </div>
           </div>
           
           {workspace.lastSummaryAt && (
-            <div className="mt-4">
-              <Badge variant="secondary" className="text-xs font-normal bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
-                AI Summary available
-              </Badge>
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md w-fit">
+              <Sparkles className="w-3 h-3" />
+              <span className="font-medium">AI Summary</span>
             </div>
           )}
-        </CardContent>
-        <CardFooter className="pt-0">
-          <div className="text-sm text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 transform translate-x-[-10px] group-hover:translate-x-0 duration-200">
-            Open Workspace <ArrowRight className="w-3 h-3" />
-          </div>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </Link>
   );
 }
