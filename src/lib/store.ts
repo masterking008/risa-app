@@ -44,7 +44,7 @@ export function createWorkspace(name: string): Workspace {
   return newWorkspace;
 }
 
-export function addItemToWorkspace(workspaceId: string, url: string, file?: File): Item {
+export async function addItemToWorkspace(workspaceId: string, url: string, file?: File): Promise<Item> {
   const workspaces = getWorkspaces();
   const workspaceIndex = workspaces.findIndex(w => w.id === workspaceId);
   
@@ -53,26 +53,64 @@ export function addItemToWorkspace(workspaceId: string, url: string, file?: File
   let newItem: Item;
   
   if (file) {
-    // Handle PDF file upload
+    const base64 = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+    
     newItem = {
       id: `item-${Date.now()}`,
       type: 'pdf',
       title: file.name.replace('.pdf', ''),
-      url: URL.createObjectURL(file), // Create blob URL for local file
+      url: base64,
       domain: 'local-file',
       addedAt: new Date().toISOString(),
-      content: 'PDF content will be extracted here...', // Mock content
+      content: 'PDF content will be extracted here...',
     };
   } else {
-    // Handle URL
     const domain = new URL(url).hostname.replace('www.', '');
+    let title = `New Item from ${domain}`;
+    let content = '';
+    let extractionStatus: 'pending' | 'extracting' | 'success' | 'failed' = 'extracting';
+    let extractionError: string | undefined;
+    
+    try {
+      console.log('🔄 Starting extraction for:', url);
+      const response = await fetch('/api/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        title = data.title || title;
+        content = data.content || '';
+        extractionStatus = 'success';
+        console.log('✅ Extraction successful:', { titleLength: title.length, contentLength: content.length });
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        extractionStatus = 'failed';
+        extractionError = errorData.error || `HTTP ${response.status}`;
+        console.error('❌ Extraction failed:', response.status, errorData);
+      }
+    } catch (error) {
+      extractionStatus = 'failed';
+      extractionError = error instanceof Error ? error.message : 'Network error';
+      console.error('❌ Network error during extraction:', error);
+    }
+    
     newItem = {
       id: `item-${Date.now()}`,
       type: url.endsWith('.pdf') ? 'pdf' : 'link',
-      title: `New Item from ${domain}`, // In a real app, we'd fetch title
+      title,
       url,
       domain,
       addedAt: new Date().toISOString(),
+      content,
+      extractionStatus,
+      extractionError,
     };
   }
   

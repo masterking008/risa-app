@@ -79,7 +79,7 @@ export async function generateSummary(items: Item[]): Promise<string> {
   }
 
   const context = items.map((item, index) => 
-    `Source ${index + 1} (${item.title}):\nURL: ${item.url}\nDomain: ${item.domain}\nType: ${item.type}\nContent: ${item.content || 'Content extraction pending'}`
+    `Source ${index + 1} (${item.title}):\nURL: ${item.url}\nDomain: ${item.domain}\nType: ${item.type}\nContent: ${item.content || `[Content not yet extracted. Please analyze based on the title "${item.title}" and URL: ${item.url}]`}`
   ).join('\n\n');
 
   try {

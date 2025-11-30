@@ -146,7 +146,7 @@ export const ChatBox = React.forwardRef<any, ChatBoxProps>(({ items, onAddMessag
 
   return (
     <Card className="h-full flex flex-col rounded-lg shadow-none border">
-      <CardHeader className="pb-3 relative">
+      <CardHeader className="pb-3 relative flex-shrink-0">
         <CardTitle className="text-lg">Chat with AI</CardTitle>
         <p className="text-sm text-muted-foreground">
           Ask questions about your {items.length} sources
@@ -163,8 +163,8 @@ export const ChatBox = React.forwardRef<any, ChatBoxProps>(({ items, onAddMessag
         )}
       </CardHeader>
       
-      <CardContent className="flex-1 flex flex-col p-0">
-        <div className="flex-1 overflow-y-auto p-4 max-h-[calc(100vh-300px)]">
+      <CardContent className="flex-1 flex flex-col p-0 min-h-0">
+        <div className="flex-1 overflow-y-auto p-4">
           {messages.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               <Bot className="w-8 h-8 mx-auto mb-2 opacity-50" />

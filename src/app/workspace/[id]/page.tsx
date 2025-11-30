@@ -40,9 +40,9 @@ export default function WorkspacePage() {
     setIsLoading(false);
   }, [id, router]);
 
-  const handleAddItem = (url: string, file?: File) => {
+  const handleAddItem = async (url: string, file?: File) => {
     if (!workspace) return;
-    const newItem = addItemToWorkspace(workspace.id, url, file);
+    const newItem = await addItemToWorkspace(workspace.id, url, file);
     setWorkspace(prev => prev ? ({
       ...prev,
       items: [newItem, ...prev.items]

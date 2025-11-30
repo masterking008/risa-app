@@ -5,7 +5,9 @@ export interface Item {
   url: string;
   domain: string;
   addedAt: string;
-  content?: string; // Mocked extracted content
+  content?: string;
+  extractionStatus?: 'pending' | 'extracting' | 'success' | 'failed';
+  extractionError?: string;
 }
 
 export interface Workspace {
