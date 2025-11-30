@@ -53,11 +53,41 @@ export async function addItemToWorkspace(workspaceId: string, url: string, file?
   let newItem: Item;
   
   if (file) {
+    // Process PDF file using Gemini API
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    
     const base64 = await new Promise<string>((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result as string);
       reader.readAsDataURL(file);
     });
+    
+    let content = 'PDF content extraction in progress...';
+    let extractionStatus: 'pending' | 'extracting' | 'success' | 'failed' = 'extracting';
+    let extractionError: string | undefined;
+    
+    try {
+      const result = await model.generateContent([
+        {
+          inlineData: {
+            mimeType: 'application/pdf',
+            data: base64.split(',')[1] // Remove data:application/pdf;base64, prefix
+          }
+        },
+        'Extract and summarize the main content from this PDF document. Provide a comprehensive text extraction.'
+      ]);
+      
+      content = result.response.text();
+      extractionStatus = 'success';
+      console.log('✅ PDF extraction successful:', { contentLength: content.length });
+    } catch (error) {
+      extractionStatus = 'failed';
+      extractionError = error instanceof Error ? error.message : 'PDF extraction failed';
+      console.error('❌ PDF extraction failed:', error);
+      content = 'Failed to extract PDF content. Please try again.';
+    }
     
     newItem = {
       id: `item-${Date.now()}`,
@@ -66,7 +96,9 @@ export async function addItemToWorkspace(workspaceId: string, url: string, file?
       url: base64,
       domain: 'local-file',
       addedAt: new Date().toISOString(),
-      content: 'PDF content will be extracted here...',
+      content,
+      extractionStatus,
+      extractionError,
     };
   } else {
     const domain = new URL(url).hostname.replace('www.', '');
